@@ -128,20 +128,20 @@ template <typename Type,typename Allocator>
 class simple_allocator
 {
 public:
-	static void *allocate(size_t n)
+	static Type *allocate(size_t num)
 	{
-		return 0 == n ? 0 : (Type *)Allocator::allocate(sizeof(Type)*n);
+		return 0 == num ? 0 : (Type *)Allocator::allocate(sizeof(Type)*num);
 	}
 
-	static void *allocate(void)
+	static Type *allocate(void)
 	{
 		return (Type *)Allocator::allocate(sizeof(Type));
 	}
 
-	static void deallocate(Type *p,size_t n)
+	static void deallocate(Type *p,size_t num)
 	{
-		if (0 != n)
-			Allocator::deallocate(p, sizeof(Type)*n);
+		if (0 != num)
+			Allocator::deallocate(p, sizeof(Type)*num);
 	}
 
 	static void deallocate(Type *p)

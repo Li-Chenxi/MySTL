@@ -82,9 +82,12 @@
     <ClInclude Include="MySTL_allocate.h" />
     <ClInclude Include="MySTL_construct.h" />
     <ClInclude Include="MySTL_deque.h" />
+    <ClInclude Include="MySTL_heap.h" />
     <ClInclude Include="MySTL_iterator.h" />
     <ClInclude Include="MySTL_list.h" />
     <ClInclude Include="MySTL_numeric.h" />
+    <ClInclude Include="MySTL_queue.h" />
+    <ClInclude Include="MySTL_stack.h" />
     <ClInclude Include="MySTL_type_traits.h" />
     <ClInclude Include="MySTL_uninitialized.h" />
     <ClInclude Include="MySTL_vector.h" />

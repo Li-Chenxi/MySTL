@@ -7,10 +7,10 @@
 #define LIST_H
 
 #include "MySTL_allocate.h"
-#include "MySTL_allocate.h"
+#include "MySTL_algobase.h"
 #include "MySTL_construct.h"
 #include "MySTL_iterator.h"
-#include <cstddef>	//for ptrdiff_t
+#include <cstddef>
 
 template <typename Type>
 struct __list_node
@@ -21,14 +21,16 @@ struct __list_node
 	Type data;
 };
 
-template <typename Type>
+template <typename Type,typename Ref,typename Ptr>
 struct __list_iterator
 {
 	typedef __list_node<Type> *node_pointer;
-	typedef __list_iterator<Type> self;
+	typedef __list_iterator self;
+
 	typedef bidirectional_iterator_tag iterator_category;
-	typedef Type *pointer;
-	typedef Type &reference;
+	typedef Type value_type;
+	typedef Ptr pointer;
+	typedef Ref reference;
 	typedef size_t size_type;
 	typedef ptrdiff_t difference_type;
 
@@ -46,13 +48,13 @@ struct __list_iterator
 	{
 	}
 
-	const self &operator=(const self &x)
+	self &operator=(const self &x)
 	{
 		p = x.p;
 		return *this;
 	}
 
-	bool operator==(self &x) const
+	bool operator==(const self &x) const
 	{
 		return p == x.p;
 	}
@@ -64,37 +66,37 @@ struct __list_iterator
 
 	reference operator*() const
 	{
-		return p->data;
+		return ((node_pointer)p)->data;
 	}
 
 	pointer operator->() const
 	{
-		return &(p->data);
+		return &(operator*());
 	}
 
 	self &operator++()
 	{
-		p = (node_pointer)p->next;
+		p = ((node_pointer)p)->next;
 		return *this;
 	}
 
 	self operator++(int)
 	{
 		self tmp = *this;
-		p = (node_pointer)p->next;
+		p = ((node_pointer)p)->next;
 		return self;
 	}
 
 	self &operator--()
 	{
-		p = (node_pointer)p->prev;
+		p = ((node_pointer)p)->prev;
 		return *this;
 	}
 
 	self operator--(int)
 	{
 		self tmp = *this;
-		p = (node_pointer)p->prev;
+		p = ((node_pointer)p)->prev;
 		return tmp;
 	}
 };
@@ -103,35 +105,40 @@ template <typename Type,typename Allocator=allocator>
 class list
 {
 public:
-	typedef __list_node<Type>	  list_node;
-	typedef __list_iterator<Type> iterator;
-	typedef Type				  value_type;
-	typedef value_type *		  pointer;
-	typedef value_type &		  reference;
-	typedef size_t				  size_type;
-	typedef ptrdiff_t			  difference_type;
+	typedef __list_node<Type> *node_pointer;
+
+	typedef __list_iterator<Type, Type &, Type *> iterator;
+	typedef __list_iterator<Type, const Type &, const Type *> const_iterator;
+
+	typedef Type value_type;
+	typedef value_type *pointer;
+	typedef const value_type *const_pointer;
+	typedef value_type &reference;
+	typedef const value_type &const_reference;
+	typedef size_t	size_type;
+	typedef ptrdiff_t difference_type;
 protected:
-	typedef simple_allocator<list_node, Allocator> data_allocator;
+	typedef simple_allocator<node, Allocator> data_allocator;
 	iterator finish;
 
-	list_node *get_node()
+	node_pointer get_node()
 	{
 		return data_allocator::allocate();
 	}
 
-	void put_node(list_node *p)
+	void put_node(node_pointer *p)
 	{
 		data_allocator::deallocate(p);
 	}
 
-	list_node *create_node(const Type &value)
+	node_pointer create_node(const Type &value)
 	{
-		list_node *p = get_node;
+		node_pointer p = get_node();
 		construct(&(p->data), value);
 		return p;
 	}
 
-	void destroy_node(list_node *p)
+	void destroy_node(node_pointer *p)
 	{
 		destroy(&(p->data));
 		put_node(p);
@@ -139,7 +146,7 @@ protected:
 
 	void empty_initialize()
 	{
-		finish.p = get_node();
+		finish = get_node();
 		(finish.p)->prev = finish.p;
 		(finish.p)->next = finish.p;
 	}
@@ -151,36 +158,59 @@ public:
 		empty_initialize();
 	}
 
-	iterator begin() const
+	iterator begin()
 	{
-		iterator tmp=end();
-		return (--tmp);
+		return (finish.p)->prev;
 	}
 
-	iterator end() const
+	const_iterator begin() const
+	{
+		return (finish.p)->prev;
+	}
+
+	iterator end()
+	{
+		return finish;
+	}
+
+	const_iterator end() const
 	{
 		return finish;
 	}
 
 	bool empty() const
 	{
-		return begin() == end();
+		return finish.p==(finish.p->next);
 	}
 
 	size_type size() const
 	{
-		return (size_t)distance(begin(), end());
+		return (size_type)distance(begin(), end());
+	}
+
+	size_type max_size() const
+	{
+		return size_type(-1);
 	}
 
 	reference front()
 	{
-		return *(begin());
+		return *((finish.p)->next);
+	}
+
+	const_reference front() const 
+	{
+		return *((finish.p)->next);
 	}
 
 	reference back()
 	{
-		iterator tmp=end();
-		return *(--tmp);
+		return *((finish.p)->prev);
+	}
+
+	const_reference back() const
+	{
+		return *((finish.p)->prev);
 	}
 
 	void push_front(const Type &value)
@@ -209,13 +239,17 @@ public:
 	void clear();
 	void remove(const Type &value);
 	void unique();
-	iterator find(iterator first, iterator last, const Type &value);
 	void splice(iterator position, list &x);
 	void splice(iterator position, iterator i);
 	void splice(iterator position, iterator first, iterator last);
 	void merge(list &x);
 	void reverse();
 	void sort();
+
+	~list()
+	{
+		
+	}
 };
 
 #endif

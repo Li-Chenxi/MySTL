@@ -16,6 +16,13 @@ inline void construct(T1 *p, T2 &value)
 	new(p)T2(value);
 }
 
+template <typename T1>
+inline void construct(T1 *p)
+{
+	construct(p, T1());
+}
+
+
 template <typename T>
 inline void destroy(T *p)
 {

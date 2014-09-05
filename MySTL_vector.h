@@ -16,19 +16,21 @@ template <typename Type,typename Allocator=allocator>
 class vector
 {
 public:
-	typedef Type			value_type;
-	typedef value_type *	pointer;
-	typedef value_type *	iterator;
-	typedef value_type &	reference;
-	typedef size_t			size_type;
-	typedef ptrdiff_t		difference_type;
+	typedef Type value_type;
+	typedef value_type *pointer;
+	typedef const value_type *const_pointer;
+	typedef value_type &reference;
+	typedef const value_type &const_reference;
+	typedef size_t size_type;
+	typedef ptrdiff_t difference_type;
+
+	typedef value_type *iterator;
+	typedef const value_type *const_iterator;
 protected:
 	typedef simple_allocator<value_type, Allocator> data_allocator;
 	iterator start;
 	iterator finish;
 	iterator end_of_storage;
-
-	void insert_aux(iterator position, const Type &x);
 
 	void deallocate()
 	{
@@ -43,12 +45,14 @@ protected:
 		return result;
 	}
 
-	void fill_initialize(size_type n, const Type *value)
+	void fill_initialize(size_type num_elements, const Type *value)
 	{
-		start = allocate_and_fill(n, value);
-		finish = start + n;
+		start = allocate_and_fill(num_elements, value);
+		finish = start + num_elements;
 		end_of_storage = finish;
 	}
+
+	void insert_aux(iterator position, const Type &x);
 public:
 	vector() :start(0), finish(0), end_of_storage(0)
 	{
@@ -74,50 +78,69 @@ public:
 		fill_initialize(n, Type());
 	}
 
-	~vector()
-	{
-		destroy(start, finish);
-		deallocate();
-	}
-
-	iterator begin() const
+	iterator begin() 
 	{
 		return start;
 	}
 
-	iterator end() const
+	const_iterator begin() const
+	{
+		return start;
+	}
+
+	iterator end()
+	{
+		return finish;
+	}
+
+	const_iterator end() const
 	{
 		return finish;
 	}
 
 	size_type size() const
 	{
-		return (size_type)(end() - begin());
+		return (size_type)(finish - start);
 	}
 
 	size_type capacity() const
 	{
-		return (size_type)(end_of_stotage - begin());
+		return (size_type)(end_of_stotage - start);
 	}
 
 	bool empty() const
 	{
-		return begin() == end();
+		return start == finish;
 	}
 
 	reference operator[] (size_type n)
 	{
-		return *(begin() + n);
+		return *(start + n);
+	}
+
+	const_reference operator[](size_type n) const
+	{
+		return *(start + n);
 	}
 
 	reference front()
 	{
-		return *(begin());
+		return *start;
+	}
+
+	const_reference front() const
+	{
+		return *start;
 	}
 
 	reference back()
 	{
-		return *(end() - 1);
+		return *(finish - 1);
+	}
+
+	const_reference back() const
+	{
+		return *(finish - 1);
 	}
 
 	void push_back(const Type &value)
@@ -142,35 +165,27 @@ public:
 
 	iterator erase(iterator position)
 	{
-		if (position >= begin() && position < end())
-		{
-			if (position + 1 != end())
-				copy(position + 1, finish, position);
-			--finish;
-			destroy(finish);
-			return position;
-		}
-		return 0;
+		if (position + 1 != finish)
+			copy(position + 1, finish, position);
+		--finish;
+		destroy(finish);
+		return position;
 	}
 
 	iterator erase(iterator first, iterator last)
 	{
-		if (first >= begin() && last <= end())
-		{
-			iterator i = copy(last, finish, first);
-			destroy(i, finish);
-			finish = finish - (last - first);
-			return first;
-		}
-		return 0;
+		iterator i = copy(last, finish, first);
+		destroy(i, finish);
+		finish = finish - (last - first);
+		return first;
 	}
 
 	void resize(size_type new_sz, const Type &value)
 	{
 		if (new_sz < size())
-			erase(begin() + new_sz, end());
+			erase(start + new_sz, finish);
 		else
-			insert(end(), new_sz - size(), value);
+			insert(finish, new_sz - size(), value);
 	}
 
 	void resize(size_type new_sz)
@@ -180,10 +195,16 @@ public:
 
 	void clear()
 	{
-		erase(begin(), end());
+		erase(start, finish);
 	}
 
 	void insert(iterator position, size_type n, const Type &value);
+
+	~vector()
+	{
+		destroy(start, finish);
+		deallocate();
+	}
 };
 
 #endif
