@@ -6,205 +6,326 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include "MySTL_iterator.h"
 #include "MySTL_allocate.h"
 #include "MySTL_uninitialized.h"
 #include "MySTL_algobase.h"
 #include "MySTL_construct.h"
 #include <cstddef>
 
-template <typename Type,typename Allocator=allocator>
-class vector
+namespace stupid
 {
-public:
-	typedef Type value_type;
-	typedef value_type *pointer;
-	typedef const value_type *const_pointer;
-	typedef value_type &reference;
-	typedef const value_type &const_reference;
-	typedef size_t size_type;
-	typedef ptrdiff_t difference_type;
-
-	typedef value_type *iterator;
-	typedef const value_type *const_iterator;
-protected:
-	typedef simple_allocator<value_type, Allocator> data_allocator;
-	iterator start;
-	iterator finish;
-	iterator end_of_storage;
-
-	void deallocate()
+	template <typename Type, typename Allocator = allocator>
+	class vector
 	{
-		if (start)
-			data_allocator::deallocate(start, end_of_storage - start);
-	}
+	public:
+		typedef Type value_type;
+		typedef value_type *pointer;
+		typedef const value_type *const_pointer;
+		typedef value_type &reference;
+		typedef const value_type &const_reference;
+		typedef size_t size_type;
+		typedef ptrdiff_t difference_type;
 
-	iterator allocate_and_fill(size_type n, const Type &value)
-	{
-		iterator result = data_allocator(n);
-		uninitialized_fill_n(result, n, value);
-		return result;
-	}
+		typedef value_type *iterator;
+		typedef const value_type *const_iterator;
+	protected:
+		typedef simple_allocator<value_type, Allocator> data_allocator;
+		iterator start;
+		iterator finish;
+		iterator end_of_storage;
 
-	void fill_initialize(size_type num_elements, const Type *value)
-	{
-		start = allocate_and_fill(num_elements, value);
-		finish = start + num_elements;
-		end_of_storage = finish;
-	}
+		void deallocate()
+		{
+			if (start)
+				data_allocator::deallocate(start, end_of_storage - start);
+		}
 
-	void insert_aux(iterator position, const Type &x);
-public:
-	vector() :start(0), finish(0), end_of_storage(0)
-	{
-	}
+		iterator allocate_and_fill(size_type num_elements, const Type &value)
+		{
+			iterator result = data_allocator::allocate(num_elements);
+			stupid::uninitialized_fill_n(result, num_elements, value);
+			return result;
+		}
 
-	vector(size_type n, const Type &value)
-	{
-		fill_initialize(n, value);
-	}
+		template<typename InputIterator, typename Distance>
+		iterator allocate_and_copy(InputIterator first, InputIterator last, Distance num_elements)
+		{
+			iterator result = data_allocator::allocate(num_elements);
+			stupid::uninitialized_copy(first, last, result);
+			return result;
+		}
 
-	vector(int n, const Type &value)
-	{
-		fill_initialize(n, value);
-	}
+		void fill_initialize(size_type num_elements, const Type &value)
+		{
+			start = allocate_and_fill(num_elements, value);
+			finish = start + num_elements;
+			end_of_storage = finish;
+		}
 
-	vector(long n, const Type &value)
-	{
-		fill_initialize(n, value);
-	}
 
-	explicit vector(size_type n)
-	{
-		fill_initialize(n, Type());
-	}
+		template<typename InputIterator, typename Distance>
+		void range_initialize(InputIterator first, InputIterator last)
+		{
+			typedef typename iterator_traits<InputIterator>::distance_type distance_type;
+			distance_type num_elements = distance(first, last);
+			start = allocate_and_copy(fisrt, last, num_elements);
+			finish = start + num_elements;
+			end_of_storage = finish;
+		}
 
-	iterator begin() 
-	{
-		return start;
-	}
+		void insert_aux(iterator position, const Type &x);
+	public:
+		vector() :start(0), finish(0), end_of_storage(0)
+		{
+		}
 
-	const_iterator begin() const
-	{
-		return start;
-	}
+		vector(size_type n, const Type &value)
+		{
+			fill_initialize(n, value);
+		}
 
-	iterator end()
-	{
-		return finish;
-	}
+		vector(int n, const Type &value)
+		{
+			fill_initialize(n, value);
+		}
 
-	const_iterator end() const
-	{
-		return finish;
-	}
+		vector(long n, const Type &value)
+		{
+			fill_initialize(n, value);
+		}
 
-	size_type size() const
-	{
-		return (size_type)(finish - start);
-	}
+		explicit vector(size_type n)
+		{
+			fill_initialize(n, Type());
+		}
 
-	size_type capacity() const
-	{
-		return (size_type)(end_of_stotage - start);
-	}
+		template <typename InputIterator>
+		vector(InputIterator first, InputIterator last)
+		{
+			range_initialize(first, last);
+		}
 
-	bool empty() const
-	{
-		return start == finish;
-	}
+		iterator begin()
+		{
+			return start;
+		}
 
-	reference operator[] (size_type n)
-	{
-		return *(start + n);
-	}
+		const_iterator begin() const
+		{
+			return start;
+		}
 
-	const_reference operator[](size_type n) const
-	{
-		return *(start + n);
-	}
+		iterator end()
+		{
+			return finish;
+		}
 
-	reference front()
-	{
-		return *start;
-	}
+		const_iterator end() const
+		{
+			return finish;
+		}
 
-	const_reference front() const
-	{
-		return *start;
-	}
+		size_type size() const
+		{
+			return (size_type)(finish - start);
+		}
 
-	reference back()
-	{
-		return *(finish - 1);
-	}
+		size_type capacity() const
+		{
+			return (size_type)(end_of_storage - start);
+		}
 
-	const_reference back() const
-	{
-		return *(finish - 1);
-	}
+		bool empty() const
+		{
+			return start == finish;
+		}
 
-	void push_back(const Type &value)
+		reference operator[] (size_type n)
+		{
+			return *(start + n);
+		}
+
+		const_reference operator[](size_type n) const
+		{
+			return *(start + n);
+		}
+
+		reference front()
+		{
+			return *start;
+		}
+
+		const_reference front() const
+		{
+			return *start;
+		}
+
+		reference back()
+		{
+			return *(finish - 1);
+		}
+
+		const_reference back() const
+		{
+			return *(finish - 1);
+		}
+
+		void push_back(const Type &value)
+		{
+			if (finish != end_of_storage)
+			{
+				stupid::construct(finish, value);
+				++finish;
+			}
+			else
+				insert_aux(finish, value);
+		}
+
+		void pop_back()
+		{
+			if (!empty())
+			{
+				--finish;
+				stupid::destroy(finish);
+			}
+		}
+
+		iterator erase(iterator position)
+		{
+			if (position + 1 != finish)
+				stupid::copy(position + 1, finish, position);
+			--finish;
+			stupid::destroy(finish);
+			return position;
+		}
+
+		iterator erase(iterator first, iterator last)
+		{
+			iterator i = stupid::copy(last, finish, first);
+			stupid::destroy(i, finish);
+			finish = finish - (last - first);
+			return first;
+		}
+
+		void resize(size_type new_sz, const Type &value)
+		{
+			if (new_sz < size())
+				erase(start + new_sz, finish);
+			else
+				insert(finish, new_sz - size(), value);
+		}
+
+		void resize(size_type new_sz)
+		{
+			resize(new_sz, Type());
+		}
+
+		void clear()
+		{
+			erase(start, finish);
+		}
+
+		void insert(iterator position, size_type n, const Type &value);
+
+		~vector()
+		{
+			stupid::destroy(start, finish);
+			deallocate();
+		}
+	};
+
+	template <typename Type, typename Allocator>
+	void vector<Type, Allocator>::insert_aux(iterator position, const Type &value)
 	{
 		if (finish != end_of_storage)
 		{
-			construct(finish, value);
-			++finish;
+			stupid::construct(finish, *(finish - 1));
+			finish++;
+			Type value_copy = value;
+			stupid::copy_backward(position, finish - 2, finish - 1);
+			*position = value_copy;
 		}
 		else
-			insert_aux(end(), value);
-	}
-
-	void pop_back()
-	{
-		if (!empty())
 		{
-			--finish;
-			destroy(finish);
+			const size_type old_size = size();
+			const size_type len = old_size != 0 ? old_size + 1 : 1;
+
+			iterator new_start = data_allocator::allocate(len);
+			iterator new_finish = new_start;
+			try
+			{
+				new_finish = stupid::uninitialized_copy(start, position, new_start);
+				stupid::construct(new_finish, value);
+				++new_finish;
+				new_finish = stupid::uninitialized_copy(position, finish, new_finish);
+			}
+			catch (...)
+			{
+				stupid::destroy(new_start, new_finish);
+				data_allocator::deallocate(new_start, len);
+				throw;
+			}
+
+			stupid::destroy(start, finish);
+			data_allocator::deallocate(start, old_size);
+			start = new_start;
+			finish = new_finish;
+			end_of_storage = start + len;
 		}
 	}
 
-	iterator erase(iterator position)
+	template <typename Type, typename Allocator>
+	void vector<Type, Allocator>::insert(iterator position, size_type num_elements, const Type &value)
 	{
-		if (position + 1 != finish)
-			copy(position + 1, finish, position);
-		--finish;
-		destroy(finish);
-		return position;
-	}
-
-	iterator erase(iterator first, iterator last)
-	{
-		iterator i = copy(last, finish, first);
-		destroy(i, finish);
-		finish = finish - (last - first);
-		return first;
-	}
-
-	void resize(size_type new_sz, const Type &value)
-	{
-		if (new_sz < size())
-			erase(start + new_sz, finish);
+		Type value_copy = value;
+		if ((size_type)(end_of_storage - finish) >= num_elements)
+		{
+			const size_type elements_after = finish - position;
+			iterator old_finish = finish;
+			if (elements_after > num_elements)
+			{
+				stupid::uninitialized_copy(finish - num_elements, finish, finish);
+				finish += num_elements;
+				stupid::copy_backward(position, old_finish - num_elements, old_finish);
+				stupid::fill(position, position + num_elements, value_copy);
+			}
+			else
+			{
+				stupid::uninitialized_fill_n(finish, num_elements - elements_after, value_copy);
+				finish += num_elements - elements_after;
+				stupid::uninitialized_copy(position, old_finish, finish);
+				finish += elements_after;
+				stupid::fill(position, old_finish, value_copy);
+			}
+		}
 		else
-			insert(finish, new_sz - size(), value);
-	}
+		{
+			const size_type old_size = size();
+			const size_type new_size = old_size + max(old_size, num_elements);
 
-	void resize(size_type new_sz)
-	{
-		resize(new_sz, Type());
-	}
+			iterator new_start = data_allocator::allocate(new_size);
+			iterator new_finish = new_start;
+			try
+			{
+				new_finish = stupid::uninitialized_copy(start, position, new_start);
+				new_finish = stupid::uninitialized_fill_n(position, num_elements, value_stupid::stupid::stupid::copy);
+				new_finish = stupid::uninitialized_copy(position, finish, new_finish);
+			}
+			catch (...)
+			{
+				stupid::destroy(new_start, new_finish);
+				data_allocator::deallocate(new_start, new_size);
+				throw;
+			}
 
-	void clear()
-	{
-		erase(start, finish);
+			stupid::destroy(start, finish);
+			data_allocator::deallocate(start, old_size);
+			start = new_start;
+			finish = new_finish;
+			end_of_storage = start + new_size;
+		}
 	}
-
-	void insert(iterator position, size_type n, const Type &value);
-
-	~vector()
-	{
-		destroy(start, finish);
-		deallocate();
-	}
-};
+}
 
 #endif
