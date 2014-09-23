@@ -204,7 +204,7 @@ namespace stupid
 		}
 	};
 
-	template <typename Type, typename Allocator = allocator, size_t Buffer_size = 0>
+	template <typename Type, typename Allocator = stupid::allocator, size_t Buffer_size = 0>
 	class deque
 	{
 	public:
@@ -221,8 +221,8 @@ namespace stupid
 	protected:
 		typedef value_type **map_pointer;
 
-		typedef simple_allocator<Type, Allocator> data_allocator;
-		typedef simple_allocator<Type *, Allocator> map_allocator;
+		typedef stupid::simple_allocator<Type, Allocator> data_allocator;
+		typedef stupid::simple_allocator<Type *, Allocator> map_allocator;
 
 		iterator start;
 		iterator finish;
@@ -351,7 +351,7 @@ namespace stupid
 		{
 			if (finish.cur != finish.last)
 			{
-				construct(finish.cur, value);
+				stupid::construct(finish.cur, value);
 				++finish.cur;
 			}
 			else
@@ -368,7 +368,7 @@ namespace stupid
 			if (start.cur != start.first)
 			{
 				--start.cur;
-				construct(start.cur, value);
+				stupid::construct(start.cur, value);
 			}
 			else
 				push_front_aux(value);
@@ -572,7 +572,6 @@ namespace stupid
 		deallocate_node(start.first);
 		start.set_node(start.node + 1);
 		start.cur = start.first;
-
 	}
 
 	template <typename Type, typename Allocator, size_t Buffer_size>

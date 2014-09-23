@@ -7,8 +7,13 @@
 #include "MySTL_slist.h"
 #include "MySTL_stack.h"
 #include "MySTL_queue.h"
+#include "MySTL_tree.h"
+#include "MySTL_functional.h"
+#include "MySTL_map.h"
+#include "MySTL_set.h"
 #include <iostream>
 #include <string>
+#include <utility>
 
 using namespace stupid;
 
@@ -17,9 +22,90 @@ int main()
 	using std::cout;
 	using std::cin;
 	using std::endl;
+	using std::string;
+	using std::pair;
+
+	map<string, int> m;
+	m.insert(std::pair<string, int>("AMD", 2));
+
+	m["IBM"] = 3;
+	m["Sun"] = 4;
+
+	cout << m["AMD"] << endl;
+	m.insert(pair<string, int>("Intel", 1));
+
+	for (auto i = m.begin(); i != m.end(); ++i)
+		cout << (*i).first << (*i).second << endl;
+
+	/*vector<int> for_insert;
+	for (int i = 400; i <= 404; ++i)
+		for_insert.push_back(i);
+	set<int> s(for_insert.begin(), for_insert.end());
+	s.insert(1);
+	s.insert(15);
+	for (auto i = s.begin(); i != s.end(); ++i)
+		cout << *i<< ' ';
+	cout << endl;*/
+
+	/*cout << s.size() << endl;
+	s.clear();
+	cout << s.size() << endl;
+	cout << *(--s.begin()) << endl;*/
+
+	/*rb_tree<int, int, identity<int>, less<int>> my_tree;
+	cout << my_tree.size() << endl;
+
+	my_tree.insert_unique(12);
+	my_tree.insert_unique(1);
+	my_tree.insert_unique(9);
+	my_tree.insert_unique(2);
+	my_tree.insert_unique(0);
+	my_tree.insert_unique(11);
+	my_tree.insert_unique(7);
+	my_tree.insert_unique(19);
+	my_tree.insert_unique(4);
+
+	my_tree.insert_unique(15);
+	my_tree.insert_unique(18);
+	my_tree.insert_unique(5);
+	my_tree.insert_unique(14);
+	my_tree.insert_unique(13);
+	my_tree.insert_unique(10);
+	my_tree.insert_unique(16);
+	my_tree.insert_unique(6);
+	my_tree.insert_unique(3);
+
+	my_tree.insert_unique(8);
+	my_tree.insert_unique(17);
+
+	cout.setf(std::ios_base::boolalpha);
+	auto result = my_tree.insert_unique(18);
+	cout << result.second << endl;
 
 
-	queue<int> st;
+	cout << my_tree.size() << endl;
+
+	rb_tree<int, int, identity<int>, less<int>> tree_copy = my_tree;
+	rb_tree<int, int, identity<int>, less<int>> tree_copy2 = tree_copy;
+	tree_copy2 = my_tree;
+
+	cout.setf(std::ios_base::boolalpha);
+	cout << (tree_copy == my_tree) << endl;
+	cout << my_tree.size() << endl;
+	cout << tree_copy.size() << endl;
+
+	auto i = tree_copy.find(3);
+	cout << *i << endl;
+
+	tree_copy.insert_equal(18);
+	for (auto i = tree_copy2.begin(); i != tree_copy2.end(); ++i)
+	{
+		cout << *i << ' ' << endl;
+	}
+
+	cout << (tree_copy == tree_copy2) << endl;*/
+
+	/*queue<int> st;
 	st.push_back(2);
 
 	st.push_back(3);
@@ -31,7 +117,7 @@ int main()
 	{
 	cout << st.front() << endl;
 	st.pop_front();
-	}
+	}*/
 
 	/*stack<int> st;
 	st.push(2);
@@ -77,8 +163,8 @@ int main()
 		cout << s[i]<<' '<<x[i] << endl;
 
 	cout.setf(std::ios_base::boolalpha);
-	cout << (x == s);*/
-	
+	cout << (x == s);
+	*/
 
 	/*priority_queue<int> q;
 

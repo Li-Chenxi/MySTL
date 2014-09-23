@@ -63,6 +63,24 @@
     <ClInclude Include="MySTL_slist.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="MySTL_tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MySTL_map.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MySTL_set.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MySTL_multiset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MySTL_multimap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MySTL_hashtable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

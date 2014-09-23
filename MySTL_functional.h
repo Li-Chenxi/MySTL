@@ -1,8 +1,17 @@
 #ifndef FUNCTIONAL_H
 #define FUNCTIONAL_H
 
+#include <utility>
+
 namespace stupid
 {
+	template <typename Arg, typename Result>
+	struct unary_function
+	{
+		typedef Arg argument_type;
+		typedef Result result_type;
+	};
+
 	template <typename Arg1, typename Arg2, typename Result>
 	struct binary_function
 	{
@@ -14,7 +23,7 @@ namespace stupid
 	template<typename Type>
 	struct plus :public binary_function < Type, Type, Type >
 	{
-		Type operator()(const Type &x, const Type &y)
+		Type operator()(const Type &x, const Type &y) const
 		{
 			return x + y;
 		}
@@ -23,7 +32,7 @@ namespace stupid
 	template <typename Type>
 	struct multiplies :public binary_function < Type, Type, Type >
 	{
-		Type operator()(const Type &x, const Type &y)
+		Type operator()(const Type &x, const Type &y) const
 		{
 			return x*y;
 		}
@@ -49,6 +58,23 @@ namespace stupid
 	{
 		return Type(1);
 	}
-}
 
+	template <typename Type>
+	struct identity :public unary_function < Type, Type >
+	{
+		const Type &operator()(const Type &x) const
+		{
+			return x;
+		}
+	};
+
+	template <typename Pair>
+	struct select1st :public unary_function < Pair, typename Pair::first_type >
+	{
+		const typename Pair::first_type &operator()(const Pair &x) const
+		{
+			return x.first;
+		}
+	};
+}
 #endif

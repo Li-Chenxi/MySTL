@@ -15,7 +15,7 @@
 
 namespace stupid
 {
-	template <typename Type, typename Allocator = allocator>
+	template <typename Type, typename Allocator = stupid::allocator>
 	class vector
 	{
 	public:
@@ -30,7 +30,7 @@ namespace stupid
 		typedef value_type *iterator;
 		typedef const value_type *const_iterator;
 	protected:
-		typedef simple_allocator<value_type, Allocator> data_allocator;
+		typedef stupid::simple_allocator<value_type, Allocator> data_allocator;
 		iterator start;
 		iterator finish;
 		iterator end_of_storage;

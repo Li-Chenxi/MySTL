@@ -298,7 +298,6 @@ namespace stupid
 		return __copy_backward_dispatch< BidirectionalIterator1, BidirectionalIterator2 >() (first, last, result);
 	}
 
-	template <>
 	inline char *copy_backward(const char *first,const char *last,char *result)
 	{
 		result = result - (last - first);
@@ -306,7 +305,6 @@ namespace stupid
 		return result;
 	}
 
-	template <>
 	inline wchar_t *copy_backward(const wchar_t *first, const wchar_t *last, wchar_t *result)
 	{
 		result = result - (last - first);

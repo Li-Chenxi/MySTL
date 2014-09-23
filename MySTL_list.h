@@ -103,7 +103,7 @@ namespace stupid
 		}
 	};
 
-	template <typename Type, typename Allocator = allocator>
+	template <typename Type, typename Allocator = stupid::allocator>
 	class list
 	{
 	public:
@@ -120,7 +120,7 @@ namespace stupid
 		typedef size_t	size_type;
 		typedef ptrdiff_t difference_type;
 	protected:
-		typedef simple_allocator<__list_node<Type>, Allocator> data_allocator;
+		typedef stupid::simple_allocator<__list_node<Type>, Allocator> data_allocator;
 		iterator finish;
 
 		node_pointer get_node()

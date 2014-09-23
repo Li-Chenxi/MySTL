@@ -117,7 +117,7 @@ namespace stupid
 	};
 
 
-	template <typename Type, typename Allocator = allocator>
+	template <typename Type, typename Allocator = stupid::allocator>
 	class slist
 	{
 	public:
@@ -135,7 +135,7 @@ namespace stupid
 		typedef __slist_node_base slist_node_base;
 		typedef __slist_node<Type> slist_node;
 		typedef __slist_iterator_base iterator_base;
-		typedef simple_allocator<__slist_node<Type>, Allocator> data_allocator;
+		typedef stupid::simple_allocator<__slist_node<Type>, Allocator> data_allocator;
 
 		static slist_node *create_node(const value_type &value)
 		{

@@ -1,3 +1,8 @@
+/*
+	the code of MySTL doesn't support multi_threading and exception handing
+	the code of MySTL is really SHIT
+*/
+
 #ifndef STACK_H
 #define STACK_H
 
