@@ -311,15 +311,6 @@ namespace stupid
 		memmove(result, first, sizeof(wchar_t)*(last - first));
 		return result + (last - first);
 	}
-
-	template <typename InputIterator,typename Type>
-	InputIterator find(InputIterator first, InputIterator last, const Type &value)
-	{
-		for (; first != last; ++first)
-			if (value == *first)
-				return first;
-		return first;
-	}
 }
 
 #endif

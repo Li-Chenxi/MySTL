@@ -11,11 +11,33 @@
 #include "MySTL_functional.h"
 #include "MySTL_map.h"
 #include "MySTL_set.h"
+#include "MySTL_hashtable.h"
+#include "MySTL_hash_set.h"
+#include "MySTL_hash_multiset.h"
+#include "MySTL_hash_map.h"
+#include "MySTL_hash_multimap.h"
+#include "MySTL_hash_func.h"
 #include <iostream>
 #include <string>
 #include <utility>
 
 using namespace stupid;
+
+struct eqstr
+{
+	bool operator()(const char *s, const char *t) const 
+	{
+		return strcmp(s, t) == 0;
+	}
+};
+
+void lookup(const hash_set<const char *, hash<const char *>, eqstr > &x, const char * key)
+{
+	using std::cout;
+	using std::endl;
+	
+	cout << (((x.find(key))==x.end()) ? "no" : "yes")<< endl;
+}
 
 int main()
 {
@@ -25,7 +47,74 @@ int main()
 	using std::string;
 	using std::pair;
 
-	map<string, int> m;
+
+	int a[8];
+	istream_iterator<int> i(cin),of;
+	int k = 0;
+	while (i!=of)
+	{
+		a[k++] = *i;
+		++i;
+	}
+
+
+	for (auto i : a)
+	{
+		cout << i << ' ';
+	}
+	cout << endl;
+
+
+	/*int a[] = { 1, 2, 3, 4, 7, 5, 6 };
+	vector<int> v(a,a+sizeof(a)/(sizeof(*a)));
+
+	for (auto i = v.rbegin(); i != v.rend(); ++i)
+		cout << *i << ' ';
+	cout << endl;*/
+
+	/*hash_map<const char *, int, hash<const char *>, eqstr> map;
+
+	map["january"] = 31;
+	map["february"] = 28;
+	map["march"] = 31;
+	map["april"] = 30;
+	map["may"] = 31;
+	map["june"] = 30;
+	map["july"] = 31;
+	map["august"] = 31;
+	map["september"] = 30;
+	map["october"] = 31;
+	map["november"] = 30;
+	map["december"] = 31;
+
+	cout << "sep:" << map["september"] << endl;
+	cout << "dec:" << map["december"] << endl;
+
+	for (auto i : map)
+	{
+		cout << i.first << ' ' << i.second << endl;
+	}
+	*/
+
+	/*hash_set<const char *, hash<const char *>, eqstr> set;
+	set.insert("kiwi");
+	set.insert("plum");
+	set.insert("apple");
+	set.insert("mango");
+	set.insert("apricot");
+	set.insert("banana");
+
+	lookup(set, "mango");
+	lookup(set, "apple");
+	lookup(set, "durian");
+	
+	for (auto i = set.begin(); i != set.end(); ++i)
+	{
+		cout << *i << ' ';
+	}
+	cout << endl;*/
+
+	/*map<string, int> m;
 	m.insert(std::pair<string, int>("AMD", 2));
 
 	m["IBM"] = 3;
@@ -35,7 +124,7 @@ int main()
 	m.insert(pair<string, int>("Intel", 1));
 
 	for (auto i = m.begin(); i != m.end(); ++i)
-		cout << (*i).first << (*i).second << endl;
+		cout << (*i).first << (*i).second << endl;*/
 
 	/*vector<int> for_insert;
 	for (int i = 400; i <= 404; ++i)

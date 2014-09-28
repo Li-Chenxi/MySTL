@@ -48,6 +48,15 @@ namespace stupid
 	};
 
 	template <typename Type>
+	struct equal_to :public binary_function < Type, Type, bool >
+	{
+		bool operator()(const Type &x, const Type &y) const
+		{
+			return x == y;
+		}
+	};
+
+	template <typename Type>
 	Type identity_element(plus<Type>)
 	{
 		return Type(0);

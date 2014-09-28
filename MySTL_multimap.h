@@ -127,15 +127,6 @@ namespace stupid
 			return tree.max_size();
 		}
 
-		Data &operator[](const key_type &k)
-		{
-			iterator i = lower_bound(k);
-			if (i == end() || key_compare()(k, (*i).first))
-				return (*(insert(value_type(k, Data()))).first).second;
-			else
-				return (*i).second;
-		}
-
 		void swap(multimap &x)
 		{
 			tree.swap(x.tree);

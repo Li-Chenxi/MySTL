@@ -78,12 +78,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="MySTL_hash_map.h" />
+    <ClInclude Include="MySTL_hash_multimap.h" />
+    <ClInclude Include="MySTL_hash_multiset.h" />
+    <ClInclude Include="MySTL_hash_set.h" />
+    <ClInclude Include="MySTL_algo.h" />
     <ClInclude Include="MySTL_algobase.h" />
     <ClInclude Include="MySTL_allocate.h" />
     <ClInclude Include="MySTL_construct.h" />
     <ClInclude Include="MySTL_deque.h" />
     <ClInclude Include="MySTL_functional.h" />
     <ClInclude Include="MySTL_hashtable.h" />
+    <ClInclude Include="MySTL_hash_func.h" />
     <ClInclude Include="MySTL_heap.h" />
     <ClInclude Include="MySTL_iterator.h" />
     <ClInclude Include="MySTL_list.h" />

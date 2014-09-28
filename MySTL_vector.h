@@ -29,6 +29,8 @@ namespace stupid
 
 		typedef value_type *iterator;
 		typedef const value_type *const_iterator;
+		typedef stupid::reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef stupid::reverse_iterator<iterator> reverse_iterator;
 	protected:
 		typedef stupid::simple_allocator<value_type, Allocator> data_allocator;
 		iterator start;
@@ -64,12 +66,12 @@ namespace stupid
 		}
 
 
-		template<typename InputIterator, typename Distance>
+		template<typename InputIterator>
 		void range_initialize(InputIterator first, InputIterator last)
 		{
-			typedef typename iterator_traits<InputIterator>::distance_type distance_type;
-			distance_type num_elements = distance(first, last);
-			start = allocate_and_copy(fisrt, last, num_elements);
+			typedef typename iterator_traits<InputIterator>::difference_type difference_type;
+			difference_type num_elements = stupid::distance(first, last);
+			start = allocate_and_copy(first, last, num_elements);
 			finish = start + num_elements;
 			end_of_storage = finish;
 		}
@@ -116,6 +118,16 @@ namespace stupid
 			return start;
 		}
 
+		reverse_iterator rbegin()
+		{
+			return reverse_iterator(end());
+		}
+
+		const_reverse_iterator rbegin() const
+		{
+			return reverse_iterator(end());
+		}
+
 		iterator end()
 		{
 			return finish;
@@ -124,6 +136,17 @@ namespace stupid
 		const_iterator end() const
 		{
 			return finish;
+		}
+
+
+		reverse_iterator rend()
+		{
+			return reverse_iterator(begin());
+		}
+
+		const_reverse_iterator rend() const
+		{
+			return const_reverse_iterator(begin());
 		}
 
 		size_type size() const
@@ -221,9 +244,40 @@ namespace stupid
 			resize(new_sz, Type());
 		}
 
+		void reserve(size_type new_cp)
+		{
+			if (capacity() < new_cp)
+			{
+				iterator new_start = data_allocator::allocate(new_cp);
+				try
+				{
+					stupid::uninitialized_copy(start, finish, new_start);
+				}
+				catch (...)
+				{
+					data_allocator::deallocate(new_start);
+					throw;
+				}
+
+				size_type old_size = finish - start;
+				destroy(start, finish);
+				deallocate();
+				start = new_start;
+				finish = start + old_size;
+				end_of_storage = start+new_cp;
+			}
+		}
+
 		void clear()
 		{
 			erase(start, finish);
+		}
+
+		void swap(vector &x)
+		{
+			stupid::swap(start, x.start);
+			stupid::swap(finish, x.finish);
+			stupid::swap(end_of_storage, x.end_of_storage);
 		}
 
 		void insert(iterator position, size_type n, const Type &value);
@@ -309,7 +363,7 @@ namespace stupid
 			try
 			{
 				new_finish = stupid::uninitialized_copy(start, position, new_start);
-				new_finish = stupid::uninitialized_fill_n(position, num_elements, value_stupid::stupid::stupid::copy);
+				new_finish = stupid::uninitialized_fill_n(position, num_elements, value_copy);
 				new_finish = stupid::uninitialized_copy(position, finish, new_finish);
 			}
 			catch (...)

@@ -221,7 +221,7 @@ namespace stupid
 		void pop_front()
 		{
 			slist_node *tmp = (slist_node *)(head.next);
-			head = head.next;
+			head = tmp.next;
 			destroy_node(tmp);
 		}
 

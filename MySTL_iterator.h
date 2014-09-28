@@ -6,6 +6,7 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
+#include <iostream>
 #include <cstddef>	//for ptrdiff_t
 
 namespace stupid
@@ -41,7 +42,7 @@ namespace stupid
 	};
 
 	template <typename T>
-	struct iterator_traits<T *>
+	struct iterator_traits < T * >
 	{
 		typedef random_access_iterator_tag iterator_category;
 		typedef T						   value_type;
@@ -51,7 +52,7 @@ namespace stupid
 	};
 
 	template <typename T>
-	struct iterator_traits<const T *>
+	struct iterator_traits < const T * >
 	{
 		typedef random_access_iterator_tag iterator_category;
 		typedef T						   value_type;
@@ -69,7 +70,7 @@ namespace stupid
 	}
 
 	template <typename Iterator>
-	inline typename iterator_traits<Iterator>::difference_type *
+	inline typename iterator_traits<Iterator>::difference_type * 
 		distance_type(const Iterator &)
 	{
 		return static_cast<typename iterator_traits<Iterator>::difference_type *>(0);
@@ -144,6 +145,246 @@ namespace stupid
 	{
 		__advance(i, n, iterator_category(i));
 	}
+
+	template <typename Iterator>
+	class reverse_iterator
+	{
+	protected:
+		Iterator current;
+	public:
+		typedef typename iterator_traits<Iterator>::iterator_category iterator_category;
+		typedef typename iterator_traits<Iterator>::value_type value_type;
+		typedef typename iterator_traits<Iterator>::difference_type difference_type;
+		typedef typename iterator_traits<Iterator>::pointer pointer;
+		typedef typename iterator_traits<Iterator>::reference reference;
+
+		typedef Iterator iterator_type;
+		typedef reverse_iterator self;
+
+		explicit reverse_iterator(Iterator iterator)
+			:current(iterator)
+		{
+		}
+
+		reverse_iterator(const self &x)
+			:current(x.current)
+		{
+		}
+
+		iterator_type base() const
+		{
+			return current;
+		}
+
+		reference operator*() const
+		{
+			iterator_type tmp = current;
+			--tmp;
+			return *tmp;
+		}
+
+		pointer operator&() const
+		{
+			return &(operator*());
+		}
+
+		self &operator++()
+		{
+			--current;
+			return *this;
+		}
+
+		self operator++(int)
+		{
+			iterator_type tmp = current;
+			--current;
+			return tmp;
+		}
+
+		self &operator--()
+		{
+			++current;
+			return *this;
+		}
+
+		self operator--(int)
+		{
+			iterator_type tmp = current;
+			++current;
+			return tmp;
+		}
+
+		self &operator+=(difference_type n)
+		{
+			current -= n;
+			return *this;
+		}
+
+		self &operator-=(difference_type n)
+		{
+			current += n;
+			return *this;
+		}
+
+		self operator+(difference_type n)
+		{
+			return self(current - n);
+		}
+
+		self operator-(difference_type n)
+		{
+			return self(current_type + n);
+		}
+
+		reference operator[](difference_type n)
+		{
+			return *(*this + n);
+		}
+
+		bool operator==(const self &x) const
+		{
+			return current == x.current;
+		}
+
+		bool operator<(const self &x) const
+		{
+			return current < x.current;
+		}
+
+		bool operator!=(const self &x) const
+		{
+			return current != x.current;
+		}
+
+		bool operator>(const self &x) const
+		{
+			return current > x.current;
+		}
+
+		bool operator<=(const self &x) const
+		{
+			return current <= x.current;
+		}
+
+		bool operator>=(const self &x) const
+		{
+			return current >= x.current;
+		}
+	};
+
+	template<typename Type, typename Distance=ptrdiff_t>
+	class istream_iterator
+	{
+	protected:
+		std::istream *stream;
+		Type value;
+		bool end_marker;
+		void read()
+		{
+			end_marker = (*stream) ? true : false;
+			if (end_marker)
+				*stream >> value;
+			end_marker = (*stream) ? true : false;
+		}
+
+	public:
+		typedef stupid::input_iterator_tag iterator_category;
+		typedef Type value_type;
+		typedef Distance difference_type;
+		typedef const Type *pointer;
+		typedef const Type &reference;
+
+		istream_iterator()
+		{
+			stream = &std::cin;
+			end_marker = false;
+		}
+
+		istream_iterator(std::istream &is)
+		{
+			stream = &is;
+			read();
+		}
+
+		reference operator*() const
+		{
+			return value;
+		}
+
+		reference operator->() const
+		{
+			return &(operator*());
+		}
+
+		istream_iterator &operator++()
+		{
+			read();
+			return *this;
+		}
+
+		istream_iterator operator++(int)
+		{
+			istream_iterator tmp = *this;
+			read();
+			return tmp;
+		}
+
+		bool operator==(const istream_iterator &x)
+		{
+			return (end_marker == x.end_marker && (end_marker == false || stream == x.stream));
+		}
+
+		bool operator!=(const istream_iterator &x)
+		{
+			return !(*this == x);
+		}
+	};
+
+	template<typename Type, typename Distance = ptrdiff_t>
+	class ostream_iterator
+	{
+	protected:
+		std::ostream *stream;
+		const char *separator;
+	public:
+		typedef stupid::output_iterator_tag iterator_category;
+		typedef void value_type;
+		typedef void difference_type;
+		typedef void pointer;
+		typedef void reference;
+
+		ostream_iterator()
+		{
+			stream = &cout;
+			separator = "";
+		}
+
+		ostream_iterator(std::ostream &os, const char *s)
+		{
+			stream = &os;
+			separator = s;
+		}
+
+		ostream_iterator &operator=(const Type &value) const
+		{
+			stream << value << separator;
+		}
+
+		ostream_iterator &operator*()
+		{
+			return *this;
+		}
+
+		ostream_iterator &operator++()
+		{
+			return *this;
+		}
+
+		ostream_iterator &operator(int)
+		{
+			return *this;
+		}
+	};
 }
 
 #endif
