@@ -89,6 +89,18 @@ namespace stupid
 			table.insert_equal(first, last);
 		}
 
+		hash_multimap(const hash_multimap &x)
+		{
+			table(x.table);
+		}
+
+		hash_multimap operator=(const hash_multimap &x)
+		{
+			if (&x != this)
+				table = x.table;
+			return *this;
+		}
+
 		size_type size() const
 		{
 			return table.size();
@@ -207,33 +219,9 @@ namespace stupid
 	}
 
 	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator< (const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &y)
-	{
-		return x.table < y.table;
-	}
-
-	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
 	bool operator!=(const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &y)
 	{
-		return !(x == y);
-	}
-
-	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator>(const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &y)
-	{
-		return y < x;
-	}
-
-	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator>=(const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &y)
-	{
-		return !(x < y);
-	}
-
-	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator<=(const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_multimap<Key, Data, HashFunc, EqualKey, Allocator> &y)
-	{
-		return !(x > y);
+		return x.table != y.table;
 	}
 }
 

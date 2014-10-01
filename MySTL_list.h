@@ -111,6 +111,8 @@ namespace stupid
 
 		typedef __list_iterator<Type, Type &, Type *> iterator;
 		typedef __list_iterator<Type, const Type &, const Type *> const_iterator;
+		typedef stupid::reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef stupid::reverse_iterator<iterator> reverse_iterator;
 
 		typedef Type value_type;
 		typedef value_type *pointer;
@@ -170,6 +172,16 @@ namespace stupid
 			return (finish.p)->next;
 		}
 
+		reverse_iterator rbegin()
+		{
+			return reverse_iterator(end());
+		}
+
+		const_reverse_iterator rbegin() const
+		{
+			return const_reverse_iterator(end());
+		}
+
 		iterator end()
 		{
 			return finish.p;
@@ -178,6 +190,16 @@ namespace stupid
 		const_iterator end() const
 		{
 			return finish.p;
+		}
+
+		reverse_iterator rend()
+		{
+			return reverse_iterator(begin());
+		}
+
+		const_reverse_iterator rend() const
+		{
+			return const_reverse_iterator(begin());
 		}
 
 		bool empty() const

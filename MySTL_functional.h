@@ -39,11 +39,20 @@ namespace stupid
 	};
 
 	template <typename Type>
-	struct less :public binary_function<Type, Type, bool>
+	struct less :public binary_function < Type, Type, bool >
 	{
 		bool operator()(const Type &x, const Type &y) const
 		{
 			return x < y;
+		}
+	};
+
+	template <typename Type>
+	struct greater :public binary_function < Type, Type, bool >
+	{
+		bool operator()(const Type &x, const Type &y) const
+		{
+			return x > y;
 		}
 	};
 

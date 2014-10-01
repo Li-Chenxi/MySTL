@@ -17,9 +17,13 @@
 #include "MySTL_hash_map.h"
 #include "MySTL_hash_multimap.h"
 #include "MySTL_hash_func.h"
+#include "MySTL_algo.h"
+#include "MySTL_iterator.h"
 #include <iostream>
 #include <string>
 #include <utility>
+#include <cstdlib>
+#include <ctime>
 
 using namespace stupid;
 
@@ -47,8 +51,77 @@ int main()
 	using std::string;
 	using std::pair;
 
+	int x[] = { 1, 6, 3, 5, 2 ,8,15,12};
+	for (auto i : x)
+		cout << i << ' ';
+	cout << endl;
+	stupid::mergesort(x, x + 8);
+	for (auto i : x)
+		cout << i << ' ';
+	cout << endl; 
+	/*stupid::vector<int> a(x, x + sizeof(x) / sizeof(*x));
+		for (auto i : a)
+		cout << i << ' ';
+	cout << endl;
 
-	int a[8];
+	vector<int> b(3, 10);
+	for (auto i : b)
+		cout << i << ' ';
+	cout << endl;
+
+	stupid::copy_backward(x, x + 3, x + 4);
+	for (auto i : x)
+		cout << i << ' ';
+	cout << endl;*/
+
+
+	/*stupid::vector<int> vec(a, a + 5);
+	for (auto i : vec)
+		cout << i << ' ';
+	cout << endl;
+	stupid::vector<int> vec_copy(3);
+
+	stupid::partial_sort_copy(vec.begin(), vec.begin() + 5, vec_copy.begin(), vec_copy.end(),greater<int>());
+	for (auto i : vec_copy)
+	{
+		cout << i << ' ';
+	}
+	cout << endl;*/
+
+	/*int a[5] = { 1, 2, 3, 4, 5 };
+	stupid::random_shuffle(a, a + 5);
+	for (auto i : a)
+		cout << i << ' ';
+	cout << endl;
+	stupid::partial_sort(a, a + 3, a + 5);
+	for (auto i : a)
+		cout << i << ' ';
+	cout << endl;*/
+
+	/*stupid::make_heap(a, a + 4);
+	for (auto i : a)
+		cout << i << ' ';
+	cout << endl;
+	stupid::push_heap(a, a + 5); 
+	stupid::make_heap(a, a + 5);
+	for (auto i : a)
+		cout << i << ' ';
+	cout << endl;
+	*/
+
+	/*while (stupid::next_permutation(a, a + 4))
+	{
+		for (auto i : a)
+			cout << i << ' ';
+		cout << endl;
+	}
+
+	stupid::random_shuffle(a, a + 4);
+	for (auto i : a)
+		cout << i << ' ';
+	cout << endl;
+	*/
+	/*int a[8];
 	istream_iterator<int> i(cin),of;
 	int k = 0;
 	while (i!=of)
@@ -64,7 +137,7 @@ int main()
 	}
 	cout << endl;
 
-
+	*/
 	/*int a[] = { 1, 2, 3, 4, 7, 5, 6 };
 	vector<int> v(a,a+sizeof(a)/(sizeof(*a)));
 

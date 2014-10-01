@@ -117,8 +117,8 @@ namespace stupid
 		typedef __rb_tree_node<Value> *link_type;
 
 		__rb_tree_iterator()
+			:__rb_tree_iterator_base(0)
 		{
-
 		}
 
 		__rb_tree_iterator(base_ptr x)
@@ -201,6 +201,8 @@ namespace stupid
 		typedef rb_tree_node *link_type;
 		typedef __rb_tree_iterator<value_type, reference, pointer> iterator;
 		typedef __rb_tree_iterator<value_type, const_reference, const_pointer> const_iterator;
+		typedef stupid::reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef stupid::reverse_iterator<iterator> reverse_iterator;
 	protected:
 		link_type get_node()
 		{
@@ -411,6 +413,16 @@ namespace stupid
 			return leftmost();
 		}
 
+		reverse_iterator rbegin()
+		{
+			return reverse_iterator(end());
+		}
+
+		const_reverse_iterator rbegin() const
+		{
+			return const_reverse_iterator(end());
+		}
+
 		iterator end()
 		{
 			return header;
@@ -419,6 +431,16 @@ namespace stupid
 		const_iterator end() const
 		{
 			return header;
+		}
+
+		reverse_iterator rend()
+		{
+			return reverse_iterator(begin());
+		}
+
+		const_reverse_iterator rend() const
+		{
+			return const_reverse_iterator(begin());
 		}
 
 		bool empty() const

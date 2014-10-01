@@ -274,6 +274,29 @@ namespace stupid
 			initialize_buckets(n);
 		}
 
+		hashtable(const hashtable &x)
+			:hash(x.hash),
+			equals(x.equals),
+			get_key(x.get_key),
+			num_elements(0)
+		{
+			copy_from(x);
+		}
+
+		hashtable &operator=(const hashtable &x)
+		{
+			if (this != &x)
+			{
+				clear();
+				hash = x.hash;
+				equals = x.equals;
+				get_key = x.get_key;
+				copy_from(x);
+			}
+			
+			return *this;
+		}
+
 		iterator begin()
 		{
 			for (size_type i = 0; i < buckets.size(); ++i)
@@ -415,6 +438,11 @@ namespace stupid
 			return hash(key) % n;
 		}
 
+		~hashtable()
+		{
+			clear();
+		}
+
 		iterator find(const key_type &key);
 		const_iterator find(const key_type &key) const;
 		size_type count(const key_type &key) const;
@@ -423,6 +451,7 @@ namespace stupid
 
 		void clear();
 		void copy_from(const hashtable &x);
+		friend bool operator==(const hashtable &x, const hashtable &y);
 	};
 
 	template <typename Value, typename Key, typename HashFunc, typename ExtractKey, typename EqualKey, typename Allocator>
@@ -505,7 +534,6 @@ namespace stupid
 	template <typename Value, typename Key, typename HashFunc, typename ExtractKey, typename EqualKey, typename Allocator>
 	void hashtable<Value, Key, HashFunc, ExtractKey, EqualKey, Allocator>::copy_from(const hashtable<Value, Key, HashFunc, ExtractKey, EqualKey, Allocator> &x)
 	{
-		clear();
 		buckets.clear();
 		size_type n = x.buckets.size();
 		buckets.reserve(n);
@@ -721,16 +749,30 @@ namespace stupid
 	bool operator==(const hashtable<Value, Key, HashFunc, ExtractKey, EqualKey, Allocator> &x,
 		const hashtable<Value, Key, HashFunc, ExtractKey, EqualKey, Allocator> &y)
 	{
-		return (x.size() == y.size() && stupid::equal(x.begin(), x.end(), y.begin()));
+		if (x.size() != y.size())
+			return false;
+		else
+		{
+			for (typename hashtable<Value, Key, HashFunc, ExtractKey, EqualKey, Allocator>::size_type i = 0; i < x.size(); ++i)
+			{
+				typename hashtable<Value, Key, HashFunct, ExtraceKey, EqualKey, Allocator>::node *cur1 = x.buckets[i];
+				typename hashtable<Value, Key, HashFunct, ExtraceKey, EqualKey, Allocator>::node *cur2 = y.buckets[i];
+
+				for (; cur1&&cur2&&cur1->value_field == cur2->value_field; cur1 = cur1->next, cur2 = cur2->next);
+
+				if (cur1 || cur2)
+					return false;
+			}
+			return true;
+		}
 	}
 
 	template <typename Value, typename Key, typename HashFunc, typename ExtractKey, typename EqualKey, typename Allocator>
-	bool operator< (const hashtable<Value, Key, HashFunc, ExtractKey, EqualKey, Allocator> &x,
+	bool operator!=(const hashtable<Value, Key, HashFunc, ExtractKey, EqualKey, Allocator> &x,
 		const hashtable<Value, Key, HashFunc, ExtractKey, EqualKey, Allocator> &y)
 	{
-		return stupid::lexicalgraphical_compare(x.begin(), x.end(), y.begin(), y.end());
+		return !(x == y);
 	}
-	
 }
 
 #endif

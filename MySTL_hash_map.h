@@ -89,6 +89,18 @@ namespace stupid
 			table.insert_unique(first, last);
 		}
 
+		hash_map(const hash_map &x)
+		{
+			table(x.table);
+		}
+
+		hash_map &operator=(const hash_map &x)
+		{
+			if (&x != this)
+				table = x.table;
+			return *this;
+		}
+
 		size_type size() const
 		{
 			return table.size();
@@ -202,7 +214,7 @@ namespace stupid
 		}
 
 		friend bool operator==(const hash_map &x, const hash_map &y);
-		friend bool operator< (const hash_map &x, const hash_map &y);
+		friend bool operator!=(const hash_map &x, const hash_map &y);
 	};
 
 	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
@@ -212,33 +224,9 @@ namespace stupid
 	}
 
 	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator< (const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &y)
-	{
-		return x.table < y.table;
-	}
-
-	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
 	bool operator!=(const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &y)
 	{
-		return !(x == y);
-	}
-
-	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator> (const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &y)
-	{
-		return y < x;
-	}
-
-	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator>=(const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &y)
-	{
-		return !(x < y);
-	}
-
-	template <typename Key, typename Data, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator<=(const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &x, const hash_map<Key, Data, HashFunc, EqualKey, Allocator> &y)
-	{
-		return !(x > y);
+		return x.table == y.table;
 	}
 }
 

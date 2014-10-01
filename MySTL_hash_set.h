@@ -109,7 +109,7 @@ namespace stupid
 		}
 
 		friend bool operator==(const hash_set &x, const hash_set &y);
-		friend bool operator< (const hash_set &x, const hash_set &y);
+		friend bool operator!=(const hash_set &x, const hash_set &y);
 
 		iterator begin()
 		{
@@ -217,31 +217,7 @@ namespace stupid
 	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
 	bool operator!=(const hash_set<Value, HashFunc, EqualKey, Allocator> x, const hash_set<Value, HashFunc, EqualKey, Allocator> y)
 	{
-		return !(x == y);
-	}
-
-	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator< (const hash_set<Value, HashFunc, EqualKey, Allocator> x, const hash_set<Value, HashFunc, EqualKey, Allocator> y)
-	{
-		return x < y;
-	}
-
-	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator> (const hash_set<Value, HashFunc, EqualKey, Allocator> x, const hash_set<Value, HashFunc, EqualKey, Allocator> y)
-	{
-		return y < x;
-	}
-
-	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator<=(const hash_set<Value, HashFunc, EqualKey, Allocator> x, const hash_set<Value, HashFunc, EqualKey, Allocator> y)
-	{
-		return !(x > y);
-	}
-
-	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator>=(const hash_set<Value, HashFunc, EqualKey, Allocator> x, const hash_set<Value, HashFunc, EqualKey, Allocator> &y)
-	{
-		return !(x < y);
+		return x.table != y.table;
 	}
 }
 

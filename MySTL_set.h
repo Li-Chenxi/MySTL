@@ -26,6 +26,8 @@ namespace stupid
 		typedef typename rep_type::const_reference const_reference;
 		typedef typename rep_type::iterator iterator;
 		typedef typename rep_type::const_iterator const_iterator;
+		typedef typename rep_type::reverse_iterator reverse_iterator;
+		typedef typename rep_type::const_reverse_iterator const_reverse_iterator;
 		typedef typename rep_type::size_type size_type;
 		typedef typename rep_type::difference_type difference_type;
 
@@ -84,6 +86,16 @@ namespace stupid
 			return tree.begin();
 		}
 
+		reverse_iterator rbegin()
+		{
+			return tree.rbegin();
+		}
+
+		const_reverse_iterator rbegin() const
+		{
+			return tree.rbegin();
+		}
+
 		iterator end()
 		{
 			return tree.end();
@@ -92,6 +104,16 @@ namespace stupid
 		const_iterator end() const
 		{
 			return tree.end();
+		}
+
+		reverse_iterator rend()
+		{
+			return tree.rend();
+		}
+
+		const_reverse_iterator rend() const
+		{
+			return tree.rend();
 		}
 
 		bool empty() const

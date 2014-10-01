@@ -13,16 +13,18 @@ namespace stupid
 		{
 			*(first + holeIndex) = *(first + parent);
 			holeIndex = parent;
-			parent = (holdIndex - 1) / 2;
+			if (holeIndex == topIndex)
+				break;
+			parent = (holeIndex - 1) / 2;
 		}
 		*(first + holeIndex) = value;
 	}
 
 	template <typename RandomAccessIterator, typename Distance, typename Type, typename Compare>
-	void __push_heap(RandomAccessIterator first, Distance holeIndex, Distance topIndex, Type value, const Compare &x)
+	void __push_heap(RandomAccessIterator first, Distance holeIndex, Distance topIndex, Type value, const Compare &comp)
 	{
 		Distance parent = (holeIndex - 1) / 2;
-		while (parent >= topIndex&&x(*(first + parent), value))
+		while (parent >= topIndex&&comp(*(first + parent), value))
 		{
 			*(first + holeIndex) = *(first + parent);
 			holeIndex = parent;
@@ -40,21 +42,21 @@ namespace stupid
 	}
 
 	template <typename RandomAccessIterator, typename Distance, typename Type, typename Compare>
-	inline void __push_heap_aux(RandomAccessIterator first, RandomAccessIterator last, Distance *, Type *, const Compare &x)
+	inline void __push_heap_aux(RandomAccessIterator first, RandomAccessIterator last, Distance *, Type *, const Compare &comp)
 	{
-		__push_heap(first, Distance(last - first - 1), Distance(0), Type(*(last - 1)), x);
+		__push_heap(first, Distance(last - first - 1), Distance(0), Type(*(last - 1)), comp);
 	}
 
 	template <typename RandomAccessIterator>
 	inline void push_heap(RandomAccessIterator first, RandomAccessIterator last)
 	{
-		__push_heap_aux(first, last, distance_type(first), value_type(first));
+		__push_heap_aux(first, last, stupid::distance_type(first), stupid::value_type(first));
 	}
 
 	template <typename RandomAccessIterator, typename Compare>
-	inline void push_heap(RandomAccessIterator first, RandomAccessIterator last, const Compare &x)
+	inline void push_heap(RandomAccessIterator first, RandomAccessIterator last, const Compare &comp)
 	{
-		__push_heap_aux(first, last, distance_type(first), value_type(first), x);
+		__push_heap_aux(first, last, stupid::distance_type(first), stupid::value_type(first), comp);
 	}
 
 	template <typename RandomAccessIterator, typename Distance, typename Type>
@@ -81,14 +83,14 @@ namespace stupid
 	}
 
 	template <typename RandomAccessIterator, typename Distance, typename Type, typename Compare>
-	void __adjust_heap(RandomAccessIterator first, Distance holeIndex, Distance len, Type value, const Compare &x)
+	void __adjust_heap(RandomAccessIterator first, Distance holeIndex, Distance len, Type value, const Compare &comp)
 	{
 		Distance topIndex = holeIndex;
 		Distance secondChild = 2 * holeIndex + 2;
 
 		while (secondChild < len)
 		{
-			if (x(*(first + secondChild), *(first + secondChild - 1)))
+			if (comp(*(first + secondChild), *(first + secondChild - 1)))
 				--secondChild;
 			*(first + holeIndex) = *(first + secondChild);
 			holeIndex = secondChild;
@@ -100,7 +102,7 @@ namespace stupid
 			holeIndex = secondChild - 1;
 		}
 
-		__push_heap(first, holeIndex, topIndex, value, x);
+		__push_heap(first, holeIndex, topIndex, value, comp);
 	}
 
 	template <typename RandomAccessIterator, typename Distance, typename Type>
@@ -111,10 +113,10 @@ namespace stupid
 	}
 
 	template <typename RandomAccessIterator, typename Distance, typename Type, typename Compare>
-	inline void __pop_heap(RandomAccessIterator first, RandomAccessIterator last, RandomAccessIterator result, Type value, Distance *, const Compare &x)
+	inline void __pop_heap(RandomAccessIterator first, RandomAccessIterator last, RandomAccessIterator result, Type value, Distance *, const Compare &comp)
 	{
 		*result = *first;
-		__adjust_heap(first, Distance(0), Distance(last - first), value, x);
+		__adjust_heap(first, Distance(0), Distance(last - first), value, comp);
 	}
 
 	template <typename RandomAccessIterator, typename Type>
@@ -124,9 +126,9 @@ namespace stupid
 	}
 
 	template <typename RandomAccessIterator, typename Type, typename Compare>
-	inline void __pop_heap_aux(RandomAccessIterator first, RandomAccessIterator last, Type *, const Compare &x)
+	inline void __pop_heap_aux(RandomAccessIterator first, RandomAccessIterator last, Type *, const Compare &comp)
 	{
-		__pop_heap(first, last - 1, last - 1, Type(*(last - 1)), distance_type(first), x);
+		__pop_heap(first, last - 1, last - 1, Type(*(last - 1)), distance_type(first), comp);
 	}
 
 
@@ -137,9 +139,9 @@ namespace stupid
 	}
 
 	template <typename RandomAccessIterator, typename Compare>
-	inline void pop_heap(RandomAccessIterator first, RandomAccessIterator last, const Compare &x)
+	inline void pop_heap(RandomAccessIterator first, RandomAccessIterator last, const Compare &comp)
 	{
-		__pop_heap_aux(first, last, value_type(first), x);
+		__pop_heap_aux(first, last, value_type(first), comp);
 	}
 
 	template <typename RandomAccessIterator>
@@ -150,16 +152,16 @@ namespace stupid
 	}
 
 	template <typename RandomAccessIterator, typename Compare>
-	void sort_heap(RandomAccessIterator first, RandomAccessIterator last, const Compare &x)
+	void sort_heap(RandomAccessIterator first, RandomAccessIterator last, const Compare &comp)
 	{
 		while (last - first >= 1)
-			pop_heap(first, last--, x);
+			pop_heap(first, last--, comp);
 	}
 
 	template <typename RandomAccessIterator, typename Distance, typename Type>
 	void __make_heap(RandomAccessIterator first, RandomAccessIterator last, Distance *, Type *)
 	{
-		Distance len = first - last;
+		Distance len = last - first;
 		if (len < 2)
 			return;
 		Distance holeIndex = (len - 2) / 2;
@@ -173,15 +175,15 @@ namespace stupid
 	}
 
 	template <typename RandomAccessIterator, typename Distance, typename Type, typename Compare>
-	void __make_heap(RandomAccessIterator first, RandomAccessIterator last, Distance *, Type *, const Compare &x)
+	void __make_heap(RandomAccessIterator first, RandomAccessIterator last, Distance *, Type *, const Compare &comp)
 	{
-		Distance len = first - last;
+		Distance len = last - first;
 		if (len < 2)
 			return;
 		Distance holeIndex = (len - 2) / 2;
 		while (true)
 		{
-			__adjust_heap(first, holeIndex, len, Type(*(first + holeIndex)), x);
+			__adjust_heap(first, holeIndex, len, Type(*(first + holeIndex)), comp);
 			if (0 == holeIndex)
 				return;
 			--holeIndex;
@@ -195,9 +197,9 @@ namespace stupid
 	}
 
 	template <typename RandomAccessIterator, typename Compare>
-	void make_heap(RandomAccessIterator first, RandomAccessIterator last, const Compare &x)
+	void make_heap(RandomAccessIterator first, RandomAccessIterator last, const Compare &comp)
 	{
-		__make_heap(first, last, distance_type(first), value_type(first), x);
+		__make_heap(first, last, distance_type(first), value_type(first), comp);
 	}
 }
 

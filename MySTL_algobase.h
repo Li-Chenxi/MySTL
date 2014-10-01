@@ -204,7 +204,7 @@ namespace stupid
 	{
 		Type *operator()(const Type *first, const Type *last, Type *result)
 		{
-			typedef typename type_traits<Type>::has_trival_assignment_operator t;
+			typedef typename __type_traits<Type>::has_trival_assignment_operator t;
 			return __copy_t(first, last, result, t());
 		}
 	};

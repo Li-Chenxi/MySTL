@@ -218,6 +218,8 @@ namespace stupid
 
 		typedef __deque_iterator<Type, Type &, Type *, Buffer_size> iterator;
 		typedef __deque_iterator<Type, const Type &, const Type *, Buffer_size> const_iterator;
+		typedef stupid::reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef stupid::reverse_iterator<iterator> reverse_iterator;
 	protected:
 		typedef value_type **map_pointer;
 
@@ -292,6 +294,16 @@ namespace stupid
 			return const_iterator(start.cur, start.node);
 		}
 
+		reverse_iterator rbegin()
+		{
+			return reverse_iterator(end());
+		}
+
+		const_reverse_iterator rbegin() const
+		{
+			return const_reverse_iterator(end());
+		}
+
 		iterator end()
 		{
 			return finish;
@@ -300,6 +312,16 @@ namespace stupid
 		const_iterator end() const
 		{
 			return const_iterator(finish.cur, finish.node);
+		}
+
+		reverse_iterator rend()
+		{
+			return reverse_iterator(begin());
+		}
+
+		const_reverse_iterator rend() const
+		{
+			return const_reverse_iterator(begin());
 		}
 
 		reference front()

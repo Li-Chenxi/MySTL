@@ -99,6 +99,9 @@
     <ClInclude Include="MySTL_hash_multimap.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="MySTL_tempbuf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

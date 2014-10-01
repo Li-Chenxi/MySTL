@@ -88,6 +88,18 @@ namespace stupid
 			table.insert_equal(first, last);
 		}
 
+		hash_multiset(const hash_multiset &x)
+		{
+			table(x.table);
+		}
+
+		hash_multiset operator=(const hash_multiset &x)
+		{
+			if (&x != this)
+				table = x.table;
+			return *this;
+		}
+
 		size_type size() const
 		{
 			return table.size();
@@ -109,7 +121,7 @@ namespace stupid
 		}
 
 		friend bool operator==(const hash_multiset &x, const hash_multiset &y);
-		friend bool operator< (const hash_multiset &x, const hash_multiset &y);
+		friend bool operator!=(const hash_multiset &x, const hash_multiset &y);
 
 		iterator begin()
 		{
@@ -217,31 +229,7 @@ namespace stupid
 	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
 	bool operator!=(const hash_multiset<Value, HashFunc, EqualKey, Allocator> x, const hash_multiset<Value, HashFunc, EqualKey, Allocator> y)
 	{
-		return !(x.table == y.table);
-	}
-
-	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator< (const hash_multiset<Value, HashFunc, EqualKey, Allocator> x, const hash_multiset<Value, HashFunc, EqualKey, Allocator> y)
-	{
-		return x.table < y.table;
-	}
-
-	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator>(const hash_multiset<Value, HashFunc, EqualKey, Allocator> x, const hash_multiset<Value, HashFunc, EqualKey, Allocator> y)
-	{
-		return y.table < x.table;
-	}
-
-	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator<=(const hash_multiset<Value, HashFunc, EqualKey, Allocator> x, const hash_multiset<Value, HashFunc, EqualKey, Allocator> y)
-	{
-		return !(x.table > y.table);
-	}
-
-	template <typename Value, typename HashFunc, typename EqualKey, typename Allocator>
-	bool operator>=(const hash_multiset<Value, HashFunc, EqualKey, Allocator> x, const hash_multiset<Value, HashFunc, EqualKey, Allocator> &y)
-	{
-		return !(x.table < y.table);
+		return x.table != y.table;
 	}
 }
 

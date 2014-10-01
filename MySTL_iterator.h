@@ -380,7 +380,7 @@ namespace stupid
 			return *this;
 		}
 
-		ostream_iterator &operator(int)
+		ostream_iterator &operator++(int)
 		{
 			return *this;
 		}
