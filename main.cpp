@@ -43,6 +43,30 @@ void lookup(const hash_set<const char *, hash<const char *>, eqstr > &x, const c
 	cout << (((x.find(key))==x.end()) ? "no" : "yes")<< endl;
 }
 
+class Shape
+{
+public:
+	virtual void display() = 0;
+};
+
+class Rectangle:public Shape
+{
+public:
+	virtual void display()
+	{
+		std::cout << "Rectangle" << std::endl;
+	}
+};
+
+class Circle:public Shape
+{
+public:
+	virtual void display()
+	{
+		std::cout << "Circle" << std::endl;
+	}
+};
+
 int main()
 {
 	using std::cout;
@@ -51,7 +75,13 @@ int main()
 	using std::string;
 	using std::pair;
 
-	int x[] = { 1, 6, 3, 5, 2 ,8,15,12};
+
+	stupid::vector<Shape *> x;
+	x.push_back(new Rectangle);
+	x.push_back(new Circle);
+
+	stupid::for_each(x.begin(), x.end(), stupid::mem_fun(&Shape::display));
+	/*int x[] = { 1, 6, 3, 5, 2 ,8,15,12};
 	for (auto i : x)
 		cout << i << ' ';
 	cout << endl;
@@ -59,6 +89,9 @@ int main()
 	for (auto i : x)
 		cout << i << ' ';
 	cout << endl; 
+
+	int result = 1;
+	cout << stupid::accumulate(x, x + 8,result,stupid::multiplies<int>()) << endl;*/
 	/*stupid::vector<int> a(x, x + sizeof(x) / sizeof(*x));
 		for (auto i : a)
 		cout << i << ' ';

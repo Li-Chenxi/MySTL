@@ -385,6 +385,154 @@ namespace stupid
 			return *this;
 		}
 	};
+
+	template <typename Container>
+	class back_insert_iterator
+	{
+	protected:
+		Container *c;
+	public:
+		typedef stupid::output_iterator_tag iterator_category;
+		typedef void value_type;
+		typedef void difference_type;
+		typedef void pointer;
+		typedef void reference;
+
+		back_insert_iterator()
+			:c(0)
+		{
+		}
+
+		explicit back_insert_iterator(Container &_c)
+			:c(&_c)
+		{
+		}
+
+		back_insert_iterator &operator=(const typename Container::value_type &value)
+		{
+			c->push_back(value);
+			return *this;
+		}
+
+		back_insert_iterator &operator*() const
+		{
+			return *this;
+		}
+
+		back_insert_iterator &operator++()
+		{
+			return *this;
+		}
+
+		back_insert_iterator &operator++(int)
+		{
+			return *this;
+		}
+	};
+
+	template <typename Container>
+	stupid::back_insert_iterator<Container> back_inserter(Container &c)
+	{
+		return stupid::back_insert_iterator<Container>(c);
+	}
+
+	template <typename Container>
+	class front_insert_iterator
+	{
+	protected:
+		Container *c;
+	public:
+		typedef stupid::output_iterator_tag iterator_category;
+		typedef void value_type;
+		typedef void difference_type;
+		typedef void pointer;
+		typedef void reference;
+
+		front_insert_iterator()
+			:c(0)
+		{
+		}
+
+		explicit front_insert_iterator(Container &_c)
+			:c(&_c)
+		{
+		}
+
+		front_insert_iterator &operator=(const typename Container::value_type &value)
+		{
+			c->push_front(value);
+			return *this;
+		}
+
+		front_insert_iterator &operator*() const
+		{
+			return *this;
+		}
+
+		front_insert_iterator &operator++()
+		{
+			return *this;
+		}
+
+		front_insert_iterator &operator++(int)
+		{
+			return *this;
+		}
+	};
+
+	template <typename Container>
+	stupid::front_insert_iterator<Container> front_inserter(Container &c)
+	{
+		return stupid::front_insert_iterator<Container>(c);
+	}
+
+	template <typename Container>
+	class insert_iterator
+	{
+	protected:
+		Container *c;
+		typename Container::iterator iterator;
+	public:
+		typedef stupid::output_iterator_tag iterator_category;
+		typedef void value_type;
+		typedef void difference_type;
+		typedef void pointer;
+		typedef void reference;
+
+		insert_iterator(Container &_c, typename Container::iterator &ite)
+			:c(&_c),
+			iterator(ite)
+		{
+		}
+
+		insert_iterator &operator=(const typename Container::value_type &value)
+		{
+			c->insert(iterator, value);
+			++iterator;
+			return *this;
+		}
+
+		insert_iterator &operator*() const
+		{
+			return *this;
+		}
+
+		insert_iterator &operator++()
+		{
+			return *this;
+		}
+
+		insert_iterator &operator++(int)
+		{
+			return *this;
+		}
+	};
+
+	template <typename Container>
+	stupid::insert_iterator<Container> inserter(Container &c, typename Container::iterator ite)
+	{
+		return stupid::insert_iterator<Container>(c, ite);
+	}
 }
 
 #endif
